@@ -14,10 +14,13 @@ class _ProductListPageState extends State<ProductListPage> {
 
   int _selectedFilterIndex = 0;
 
+  late final Future<List<ProductModel>> _productsFuture;
+
 
   @override
   void initState() {
     super.initState();
+    _productsFuture = ApiService.fetchProducts();
   }
 
   @override
@@ -171,7 +174,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Widget listView() {
     return FutureBuilder<List<ProductModel>>(
-      future: ApiService.fetchProducts(),
+      future: _productsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
