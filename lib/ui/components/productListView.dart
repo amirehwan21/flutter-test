@@ -26,7 +26,7 @@ class ProductListView extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => {},
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -56,16 +56,17 @@ class ProductListView extends StatelessWidget {
                         const SizedBox(width: 10),
                         Row(
                           children: [
+                            
                             // Full stars
                             for (int i = 0; i < rating.floor(); i++)
                               Icon(Icons.star, color: Colors.amber, size: 16),
-                            
+
                             // Half star if needed
                             if (rating - rating.floor() >= 0.5)
                               Icon(Icons.star_half, color: Colors.amber, size: 16),
-                            
-                            // Empty stars (if rating < 5)
-                            for (int i = 0; i < 5 - rating.ceil(); i++)
+
+                            // Empty stars
+                            for (int i = 0; i < (5 - rating.floor() - (rating - rating.floor() >= 0.5 ? 1 : 0)); i++)
                               Icon(Icons.star_border, color: Colors.amber, size: 16),
 
                             const SizedBox(width: 4),

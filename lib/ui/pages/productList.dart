@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myeg_flutter_test/model/productModel.dart';
 import 'package:myeg_flutter_test/network/apiService.dart';
 import 'package:myeg_flutter_test/ui/components/productListView.dart';
+import 'package:myeg_flutter_test/ui/pages/productDetail.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -199,7 +200,10 @@ class _ProductListPageState extends State<ProductListPage> {
                 price: product.price,
                 rating: product.rating.rate,
                 onTap: () {
-                  print("Tapped ${product.title}");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProductDetailPage(product: product)),
+                  );
                 },
               ),
             );
