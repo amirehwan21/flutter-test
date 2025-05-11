@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:myeg_flutter_test/helper/cartService.dart';
 import 'package:myeg_flutter_test/model/productModel.dart';
+import 'package:myeg_flutter_test/ui/pages/cart.dart';
 
 class ProductDetailPage extends StatefulWidget {
 
@@ -16,27 +20,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 10, right: 10),
-        child: Column(
-          children: [
-            productImage(),
-            SizedBox(height: 10),
-            divider(),
-            productName(),
-            Row(
-              children: [
-                productPrice(),
-                SizedBox(width: 10),
-                productRating(widget.product.rating.rate)
-              ],
-            ),
-            SizedBox(height: 15),
-            
-            productDesc()
-            
-                
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 10, right: 10),
+          child: Column(
+            children: [
+              productImage(),
+              SizedBox(height: 10),
+              divider(),
+              productName(),
+              Row(
+                children: [
+                  productPrice(),
+                  SizedBox(width: 10),
+                  productRating(widget.product.rating.rate)
+                ],
+              ),
+              SizedBox(height: 15),
+              productDesc(),
+              SizedBox(height: 15),
+              addCart()
+            ],
+          ),
         ),
       ),
     );
@@ -61,8 +66,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
         Container(
           alignment: Alignment.topLeft,
-          margin: EdgeInsets.only(top: 10),
-          child: Icon(Icons.arrow_back_ios, color: Colors.black)
+          margin: const EdgeInsets.only(top: 10),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            padding: EdgeInsets.zero,  // Removes default padding
+            constraints: const BoxConstraints(),  // Removes minimum size constraints
+            onPressed: () {
+              Navigator.of(context).pop();  // Handles navigation back
+            },
+          ),
         ),
       ],
     );
@@ -143,6 +155,44 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       thickness: 1,
       indent: 20,
       endIndent: 20,
+    );
+  }
+
+  Widget addCart() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50, 
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        onPressed: () async {
+          try {
+            await CartService.addToCart(widget.product);
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Added to cart!')),
+            );
+          } catch (e) {
+            print(e);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to add to cart: $e')),
+            );
+          }
+        },
+        icon: const Icon(Icons.add_shopping_cart),
+        label: const Text(
+          'ADD TO CART',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }

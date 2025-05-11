@@ -6,6 +6,7 @@ class ProductModel {
   final String category;
   final String image;
   final Rating rating;
+  int quantity;
 
   ProductModel({
     required this.id,
@@ -15,7 +16,19 @@ class ProductModel {
     required this.category,
     required this.image,
     required this.rating,
+    this.quantity = 1
   });
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'price': price,
+    'description': description,
+    'category' : category,
+    'image': image,
+    'rating': rating.toJson(),
+    'quantity': quantity,
+  };
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
@@ -26,6 +39,7 @@ class ProductModel {
       category: json['category'],
       image: json['image'],
       rating: Rating.fromJson(json['rating']),
+      quantity: json['quantity'] ?? 1,
     );
   }
 
@@ -36,6 +50,11 @@ class Rating {
   final int count;
 
   Rating({required this.rate, required this.count});
+
+  Map<String, dynamic> toJson() => {
+    'rate': rate,
+    'count': count,
+  };
 
   factory Rating.fromJson(Map<String, dynamic> json) {
     return Rating(

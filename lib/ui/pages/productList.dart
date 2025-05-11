@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myeg_flutter_test/model/productModel.dart';
 import 'package:myeg_flutter_test/network/apiService.dart';
 import 'package:myeg_flutter_test/ui/components/productListView.dart';
+import 'package:myeg_flutter_test/ui/pages/cart.dart';
 import 'package:myeg_flutter_test/ui/pages/productDetail.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -61,7 +62,15 @@ class _ProductListPageState extends State<ProductListPage> {
               children: [
                 Container(
                   alignment: Alignment.topRight,
-                  child: Icon(Icons.shopping_cart_outlined, color: Colors.white)
+                  child: IconButton(
+                    icon: Icon(Icons.shopping_cart, color: Colors.white),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CartPage()),
+                      );
+                    }
+                  )
                 ),
               ],
             )
