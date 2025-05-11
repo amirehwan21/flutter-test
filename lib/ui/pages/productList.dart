@@ -39,8 +39,31 @@ class _ProductListPageState extends State<ProductListPage> {
         return titleLower.contains(searchLower);
       }).toList();
     });
-    print(_filteredProducts);
   }
+
+  void filterProducts(int index) {
+    setState(() {
+      if (index == 0) {
+        _filteredProducts = List.from(_allProducts);
+      } else {
+        final category = _getCategoryFromIndex(index);
+        
+        _filteredProducts = _allProducts.where((product) {
+          return product.category.toLowerCase() == category.toLowerCase();
+        }).toList();
+      }
+    });
+  }
+
+  String _getCategoryFromIndex(int index) {
+  switch(index) {
+    case 1: return 'men\'s clothing';
+    case 2: return 'women\'s clothing';
+    case 3: return 'electronics';
+    case 4: return 'jewelery';
+    default: return '';
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +186,10 @@ class _ProductListPageState extends State<ProductListPage> {
           _buildFilterButton(1, "Men"),
           SizedBox(width: 8),
           _buildFilterButton(2, "Women"),
-
+          SizedBox(width: 8),
+          _buildFilterButton(3, "Electronic"),
+          SizedBox(width: 8),
+          _buildFilterButton(4, "Jewelery"),
         ],
       ),
     );
@@ -176,6 +202,7 @@ class _ProductListPageState extends State<ProductListPage> {
           setState(() {
             _selectedFilterIndex = index;
           });
+          filterProducts(index);
         },
         borderRadius: BorderRadius.circular(8),
         child: Container(
