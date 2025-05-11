@@ -15,6 +15,8 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
 
   int _selectedFilterIndex = 0;
+  List<ProductModel> _filteredProducts = [];
+  List<ProductModel> _allProducts = [];
 
   late final Future<List<ProductModel>> _productsFuture;
 
@@ -22,7 +24,22 @@ class _ProductListPageState extends State<ProductListPage> {
   @override
   void initState() {
     super.initState();
-    _productsFuture = ApiService.fetchProducts();
+    _productsFuture = ApiService.fetchProducts().then((products) {
+      _allProducts = products;
+      _filteredProducts = products;
+      return products;
+    });
+  }
+
+  void searchProducts(String query) {
+    setState(() {
+      _filteredProducts = _allProducts.where((product) {
+        final titleLower = product.title.toLowerCase();
+        final searchLower = query.toLowerCase();
+        return titleLower.contains(searchLower);
+      }).toList();
+    });
+    print(_filteredProducts);
   }
 
   @override
@@ -128,7 +145,10 @@ class _ProductListPageState extends State<ProductListPage> {
             borderSide: BorderSide.none,
           ),
           suffixIcon: Icon(Icons.search, color: Colors.grey.shade600),
-        )
+        ),
+        onChanged: (value) {
+          searchProducts(value);
+        }
       )
     );
   }
@@ -194,14 +214,13 @@ class _ProductListPageState extends State<ProductListPage> {
           return Center(child: Text('No products available'));
         }
 
-        final products = snapshot.data!;
         return ListView.builder(
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: products.length,
+          itemCount: _filteredProducts.length,
           itemBuilder: (context, index) {
-            final product = products[index];
+            final product = _filteredProducts[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: ProductListView(
